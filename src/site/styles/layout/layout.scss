@@ -13,7 +13,7 @@ $gutter: 30px;
   box-sizing: border-box;
   -webkit-transition: 200ms background-color,200ms color;
   transition: 200ms background-color,200ms color;
-  
+
   top: 0;
   background: rgba(255,255,255,0.97);
   box-shadow: 0 0 1px rgba(0,0,0,0.15);
@@ -21,13 +21,6 @@ $gutter: 30px;
   position: fixed;
   box-shadow: 0 0 1px rgba(0,0,0,0.15);
 }
-
-//override for fixed menu
-.dante-sticky-menu{
-  top: 53px !important;
-}
-
-
 
 article {
   margin-top: 140px;

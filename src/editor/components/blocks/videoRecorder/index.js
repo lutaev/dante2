@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  EditorBlock 
+  EditorBlock
 } from 'draft-js'
 import ReactMediaRecorder from './MediaRecorder'
 import styled from '@emotion/styled'
@@ -29,7 +29,7 @@ const gray   = '#bbbbbb'
 
 const RecordActivity = styled.div`
   background: ${props =>
-    props.active ? red : green
+  props.active ? red : green
   };
   position: absolute;
   height: 13px;
@@ -67,15 +67,15 @@ const StatusBar = styled.div`
   height: 100%;
   width: 100%;
   background: ${props =>
-    props.loading ? "white" : "transparent"
+  props.loading ? "white" : "transparent"
   };
   display: ${props =>
-    props.loading ? "flex" : "none"
+  props.loading ? "flex" : "none"
   };
   align-items:center;
 
   opacity: ${props =>
-    props.loading ? "0.9" : "1"
+  props.loading ? "0.9" : "1"
   };
 `
 
@@ -275,7 +275,7 @@ class VideoRecorderBlock extends React.Component {
   }
 
   componentDidMount(){
-    this.video = this.refs.app.querySelector('video');
+    this.video = this.appRef.querySelector('video');
     if(this.state.url){
       this.setUrlToVideo(this.state.url)
       this.playMode()
@@ -314,21 +314,21 @@ class VideoRecorderBlock extends React.Component {
     this.setStreamToVideo(stream);
     console.log('Recording Started.');
 
-    // max seconds to record video 
+    // max seconds to record video
     if(!context.config.seconds_to_record) return
     let count = context.config.seconds_to_record / 1000
 
     this.setState({secondsLeft: count})
-    
-    if(this.secondInterval) 
+
+    if(this.secondInterval)
       clearTimeout(this.secondInterval)
 
     this.secondInterval = setInterval(()=> {
-       this.setState({secondsLeft: this.state.secondsLeft - 1})
+      this.setState({secondsLeft: this.state.secondsLeft - 1})
     }, 1000);
 
     this.stopTimeout = setTimeout(()=>{
-      context.refs.mediaRecorder.stop()
+      context.mediaRecorder.stop()
 
     }, context.config.seconds_to_record )
   }
@@ -392,7 +392,7 @@ class VideoRecorderBlock extends React.Component {
 
   setStreamToVideo(stream) {
 
-    let video = this.refs.app.querySelector('video');
+    let video = this.appRef.querySelector('video');
     this.recordMode(video)
 
     // is a mediastream
@@ -425,7 +425,7 @@ class VideoRecorderBlock extends React.Component {
 
   formatData = ()=> {
     let formData = new FormData()
-    
+
     if (this.file) {
       let formName = this.config.upload_formName || 'file'
 
@@ -448,7 +448,7 @@ class VideoRecorderBlock extends React.Component {
   }
 
   getUploadHeaders()  {
-   return this.config.upload_headers || {}
+    return this.config.upload_headers || {}
   }
 
   stopLoader = ()=> {
@@ -466,7 +466,7 @@ class VideoRecorderBlock extends React.Component {
     if (this.config.upload_handler) {
       return this.config.upload_handler(this.state.url, this)
     }
-    
+
     if (!this.config.upload_url){
       this.stopLoader()
       return
@@ -476,7 +476,7 @@ class VideoRecorderBlock extends React.Component {
       loading: true,
     })
 
-    
+
     axios({
       method: 'post',
       url: this.getUploadUrl(),
@@ -553,145 +553,145 @@ class VideoRecorderBlock extends React.Component {
     const paused = this.state.paused;
     return (
 
-      <div ref="app">
+      <div ref={el => { this.appRef = el }}>
 
         <VideoContainer>
-      
-          <ReactMediaRecorder ref="mediaRecorder"
-            constraints={
-              { 
-                audio: {
-                        "sampleSize": 16,
-                        "channelCount": 2,
-                        "echoCancellation": true,
-                        "noiseSuppression": false
-                        },
-                video: true 
-              }
-           }
-            timeSlice={10}
-            onGranted={this.handleGranted}
-            onDenied={this.handleDenied}
-            onStart={(stream)=> this.handleStart(stream, this)}
-            onStop={this.handleStop}
-            onPause={this.handlePause}
-            onResume={this.handleResume}
-            onError={this.handleError} 
-            render={({ start, stop, pause, resume }) => 
-            <div>
 
-              {
-                !this.isReadOnly() ?
-
-                  <StatusBar 
-                    contentEditable={false} 
-                    loading={this.state.loading}>
-
-
-                    {
-                      this.state.loading ?
-                      <Loader toggle={this.state.loading} 
-                        progress={this.state.loading_progress} 
-                      /> : null
-                    }
-
-                    {
-                      /*
-
-                        <p>
-                        { 
-                        
-                          granted ? "Permission granted" : "Permission needed"
-                        
-                        }
-                        </p>
-
-                        { 
-                          rejectedReason ? 
-                          <p>Rejected Reason: {rejectedReason}</p> : null
-                         
-                        }
-
-                      */
-                    }
-                  
-                  </StatusBar> : null
-              }
-
-              <VideoBody>
-
-
-                {
-                  !this.isReadOnly() ?
-                
-                    <EditorControls contentEditable={false}>
-
-                      <div style={{position:'relative', display: 'flex'}}>
-                        {
-                          !this.state.loading ?
-                          <React.Fragment>
-                            <RecButton 
-                              onClick={(e)=>{
-                                  e.preventDefault()
-                                  this.state.recording ? stop() : start()
+          <ReactMediaRecorder ref={el => { this.mediaRecorder = el }}
+                              constraints={
+                                {
+                                  audio: {
+                                    "sampleSize": 16,
+                                    "channelCount": 2,
+                                    "echoCancellation": true,
+                                    "noiseSuppression": false
+                                  },
+                                  video: true
                                 }
                               }
-                              disabled={this.state.recording}
-                              className={this.state.recording ? 'recording' : ''}
-                              >
-                              {this.state.recording ? `recording. (${this.state.secondsLeft} seconds left)` : `press button to start recording`}
-                            </RecButton>  
+                              timeSlice={10}
+                              onGranted={this.handleGranted}
+                              onDenied={this.handleDenied}
+                              onStart={(stream)=> this.handleStart(stream, this)}
+                              onStop={this.handleStop}
+                              onPause={this.handlePause}
+                              onResume={this.handleResume}
+                              onError={this.handleError}
+                              render={({ start, stop, pause, resume }) =>
+                                <div>
 
-                            <SecondsLeft>
-                              
-                            </SecondsLeft>
-                          </React.Fragment> : null
-                        }
-                      </div>  
+                                  {
+                                    !this.isReadOnly() ?
 
-                      {
-                        this.state.fileReady && !this.state.loading ?
-                          <Button
-                            onClick={(e)=>{
-                              e.preventDefault()
-                              this.confirm()
-                            }}>
-                            confirm recording upload ?
-                          </Button> : null
-                      }
+                                      <StatusBar
+                                        contentEditable={false}
+                                        loading={this.state.loading}>
 
 
-                      {
-                        /*
-                        this.state.recording ? 
+                                        {
+                                          this.state.loading ?
+                                            <Loader toggle={this.state.loading}
+                                                    progress={this.state.loading_progress}
+                                            /> : null
+                                        }
 
-                          <RecordActivity 
-                            granted={granted} 
-                            active={recording} 
-                          /> : null  
-                        */
-                      }
+                                        {
+                                          /*
 
-                    </EditorControls> : null
+                                            <p>
+                                            {
 
-                }
+                                              granted ? "Permission granted" : "Permission needed"
 
-                <VideoPlayer autoPlay muted/>
+                                            }
+                                            </p>
 
-                <figcaption className='imageCaption' onMouseDown={this.handleFocus}>
-                  { this.props.block.getText().length === 0 ? 
-                    <span className="danteDefaultPlaceholder">
+                                            {
+                                              rejectedReason ?
+                                              <p>Rejected Reason: {rejectedReason}</p> : null
+
+                                            }
+
+                                          */
+                                        }
+
+                                      </StatusBar> : null
+                                  }
+
+                                  <VideoBody>
+
+
+                                    {
+                                      !this.isReadOnly() ?
+
+                                        <EditorControls contentEditable={false}>
+
+                                          <div style={{position:'relative', display: 'flex'}}>
+                                            {
+                                              !this.state.loading ?
+                                                <React.Fragment>
+                                                  <RecButton
+                                                    onClick={(e)=>{
+                                                      e.preventDefault()
+                                                      this.state.recording ? stop() : start()
+                                                    }
+                                                    }
+                                                    disabled={this.state.recording}
+                                                    className={this.state.recording ? 'recording' : ''}
+                                                  >
+                                                    {this.state.recording ? `recording. (${this.state.secondsLeft} seconds left)` : `press button to start recording`}
+                                                  </RecButton>
+
+                                                  <SecondsLeft>
+
+                                                  </SecondsLeft>
+                                                </React.Fragment> : null
+                                            }
+                                          </div>
+
+                                          {
+                                            this.state.fileReady && !this.state.loading ?
+                                              <Button
+                                                onClick={(e)=>{
+                                                  e.preventDefault()
+                                                  this.confirm()
+                                                }}>
+                                                confirm recording upload ?
+                                              </Button> : null
+                                          }
+
+
+                                          {
+                                            /*
+                                            this.state.recording ?
+
+                                              <RecordActivity
+                                                granted={granted}
+                                                active={recording}
+                                              /> : null
+                                            */
+                                          }
+
+                                        </EditorControls> : null
+
+                                    }
+
+                                    <VideoPlayer autoPlay muted/>
+
+                                    <figcaption className='imageCaption' onMouseDown={this.handleFocus}>
+                                      { this.props.block.getText().length === 0 ?
+                                        <span className="danteDefaultPlaceholder">
                       {this.placeholderText()}
                     </span> : undefined}
-                  <EditorBlock {...Object.assign({}, this.props, { 
-                    "editable": true, "className": "imageCaption" })
-                    } />
-                </figcaption>
+                                      <EditorBlock {...Object.assign({}, this.props, {
+                                        "editable": true, "className": "imageCaption" })
+                                                   } />
+                                    </figcaption>
 
-              </VideoBody>
+                                  </VideoBody>
 
-            </div>
-          } />
+                                </div>
+                              } />
 
         </VideoContainer>
 
@@ -707,19 +707,19 @@ class Loader extends React.Component {
       <React.Fragment>
         { this.props.toggle
           ? <div className="image-upoader-loader" style={{width: '100%', textAlign: 'center'}}>
-              <p>
-                { this.props.progress === 100
-                  ? "processing video..."
-                  : <span>
-                      <span>uploading video {" "}</span> 
-                      { 
-                        Math.round( this.props.progress ) 
-                      }
-                      %
+            <p>
+              { this.props.progress === 100
+                ? "processing video..."
+                : <span>
+                      <span>uploading video {" "}</span>
+                  {
+                    Math.round( this.props.progress )
+                  }
+                  %
                     </span>
-                }
-              </p>
-            </div>
+              }
+            </p>
+          </div>
           : null
         }
       </React.Fragment>
@@ -757,11 +757,11 @@ export const VideoRecorderBlockConfig = (options={})=>{
     options: {
       seconds_to_record: 10000
     }
-  
+
   }
-    
+
   return Object.assign(config, options)
-} 
+}
 
 export default VideoRecorderBlock;
 

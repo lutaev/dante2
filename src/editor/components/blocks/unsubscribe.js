@@ -47,8 +47,8 @@ export default class UnsubscribeBlock extends React.Component {
   }
 
   handleClickOutside(event) {
-    if (this.wrapperRef && this.wrapperRef.refs.btn && !this.wrapperRef.refs.btn.contains(event.target) && !event.target.closest(".popover")) {
-        this.hidePopover()
+    if (this.wrapperRef && this.wrapperRef.btnRef && !this.wrapperRef.btnRef.contains(event.target) && !event.target.closest(".popover")) {
+      this.hidePopover()
     }
   }
 
@@ -87,11 +87,11 @@ export default class UnsubscribeBlock extends React.Component {
       display: "block",
       fontFamily: "Helvetica",
       fontSize: 13
-     }
+    }
   }
 
   setButtonStyle(args){
-   let a = Object.assign({}, this.state.buttonStyle, args);
+    let a = Object.assign({}, this.state.buttonStyle, args);
     this.setState({buttonStyle: a}, this.updateData)
   }
 
@@ -112,7 +112,7 @@ export default class UnsubscribeBlock extends React.Component {
   }
 
   render() {
-        console.log(this.props.block.getText().length)
+    console.log(this.props.block.getText().length)
 
     return (
       <div>
@@ -123,31 +123,7 @@ export default class UnsubscribeBlock extends React.Component {
 
         <EditorBlock {...Object.assign({}, this.props, {
           "editable": true })
-        } />
-        {
-          /*
-            <a href="#" ref="btn"
-              onMouseOver={this.props.blockProps.disableEditable}
-              onMouseOut={this.props.blockProps.enableEditable}
-              onClick={(ev)=>{
-                ev.preventDefault();
-                this.setState({displayPopOver: !this.state.displayPopOver
-              })
-            }}>
-                {this.state.link_name}
-            </a>
-
-            <Overlay
-              show={this.state.displayPopOver}
-              onHide={() => this.setState({ displayPopOver: false })}
-              placement="top"
-              target={() => ReactDOM.findDOMNode(this.refs.btn)}>
-              {this.popoverTop()}
-            </Overlay>
-          */
-        }
-
-
+                     } />
       </div>
     )
   }
@@ -161,13 +137,13 @@ class ButtonControls extends React.Component {
     this.state = {
       open: false,
       fontsFamilies: ["Georgia",
-              "Helvetica",
-              "Tahoma",
-              "Times",
-              "Verdana"],
+        "Helvetica",
+        "Tahoma",
+        "Times",
+        "Verdana"],
       fontSizes:  [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                   22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 44, 48,
-                   52, 56, 60]
+        22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 44, 48,
+        52, 56, 60]
     }
 
   }
@@ -234,7 +210,7 @@ class ButtonControls extends React.Component {
                     className="btn dropdown-toggle"
                     data-toggle="dropdown"
                     id="button-font-color"
-                    ref="btn"
+                    ref={el => { this.btnRef = el }}
                     type="button">
                     <span
                       className="color-select"
@@ -265,7 +241,7 @@ class ButtonControls extends React.Component {
                     data-toggle="dropdown"
                     id="button-font-size"
                     type="button">
-                      {this.props.buttonStyle.fontSize}
+                    {this.props.buttonStyle.fontSize}
                     <span className="caret" />
                   </button>
                   <ul
@@ -276,9 +252,9 @@ class ButtonControls extends React.Component {
                         return (
                           <li key={`font-size-${i}`}>
                             <a href="#" onClick={(ev)=>{
-                                ev.preventDefault()
-                                this.props.setButtonStyle({fontSize: o})
-                              }
+                              ev.preventDefault()
+                              this.props.setButtonStyle({fontSize: o})
+                            }
                             }>
                               {o}
                             </a>
@@ -310,9 +286,9 @@ class ButtonControls extends React.Component {
                       return (
                         <li key={`font-family-${i}`}>
                           <a href="#" onClick={(ev)=>{
-                              ev.preventDefault()
-                              this.props.setButtonStyle({fontFamily: o})
-                            }
+                            ev.preventDefault()
+                            this.props.setButtonStyle({fontFamily: o})
+                          }
                           }>
                             {o}
                           </a>

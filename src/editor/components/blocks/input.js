@@ -29,27 +29,27 @@ export default class BlockInput extends Component {
 
   render(){
     return (
-      <p style={this.props.style} 
+      <p style={this.props.style}
          onClick={(ev)=>{
-            this.setState({edit: true}, ()=>{ 
-              this.refs.input.focus()
-          })
-      }}>
-          
+           this.setState({edit: true}, ()=>{
+             this.input.focus()
+           })
+         }}>
+
         {
           this.state.edit
-          ? <input
-                className="form-control"
-                placeholder={this.props.placeholder}
-                type="text"
-                ref="input"
-                defaultValue={this.props.value}
-                onBlur={(ev)=>{this.handleChangeEv(ev, this.props.name) ; this.setState({edit: false})}}
-                //value={this.props.value}
-                //onChange={(ev)=>{this.handleChangeEv(ev, this.props.name)}}
-              />
-          : <span> 
-              {this.props.value} 
+            ? <input
+              className="form-control"
+              placeholder={this.props.placeholder}
+              type="text"
+              ref={el => { this.input = el }}
+              defaultValue={this.props.value}
+              onBlur={(ev)=>{this.handleChangeEv(ev, this.props.name) ; this.setState({edit: false})}}
+              //value={this.props.value}
+              //onChange={(ev)=>{this.handleChangeEv(ev, this.props.name)}}
+            />
+            : <span>
+              {this.props.value}
               <a href="#" onClick={(ev)=>{
                 ev.preventDefault();
                 this.setState({edit: true})}

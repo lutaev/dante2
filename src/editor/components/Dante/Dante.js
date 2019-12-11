@@ -39,8 +39,6 @@ class Dante extends React.Component {
     super(props)
   }
 
-  // componentDidMount() { }
-
   toggleEditable = () => {
     this.setState({ read_only: !this.state.read_only })
   }
@@ -82,9 +80,9 @@ Dante.propTypes = {
   }),
 
   default_wrappers: PropTypes.arrayOf(PropTypes.shape({
-     className: PropTypes.string.isRequired,
-     block: PropTypes.string.isRequired
-   })
+      className: PropTypes.string.isRequired,
+      block: PropTypes.string.isRequired
+    })
   ),
 
   continuousBlocks: PropTypes.arrayOf(PropTypes.string),
@@ -154,15 +152,15 @@ Dante.defaultProps = {
   ],
 
   key_commands: {
-      "alt-shift": [{ key: 65, cmd: 'add-new-block' }],
-      "alt-cmd": [{ key: 49, cmd: 'toggle_block:header-one' },
-                  { key: 50, cmd: 'toggle_block:header-two' },
-                  { key: 53, cmd: 'toggle_block:blockquote' }],
-      "cmd": [{ key: 66, cmd: 'toggle_inline:BOLD' },
-              { key: 73, cmd: 'toggle_inline:ITALIC' },
-              { key: 75, cmd: 'insert:link' },
-              { key: 13, cmd: 'toggle_block:divider' }
-      ]
+    "alt-shift": [{ key: 65, cmd: 'add-new-block' }],
+    "alt-cmd": [{ key: 49, cmd: 'toggle_block:header-one' },
+      { key: 50, cmd: 'toggle_block:header-two' },
+      { key: 53, cmd: 'toggle_block:blockquote' }],
+    "cmd": [{ key: 66, cmd: 'toggle_inline:BOLD' },
+      { key: 73, cmd: 'toggle_inline:ITALIC' },
+      { key: 75, cmd: 'insert:link' },
+      { key: 13, cmd: 'toggle_block:divider' }
+    ]
   },
 
   character_convert_mapping: {
@@ -183,7 +181,7 @@ Dante.defaultProps = {
     DanteInlineTooltipConfig(),
     DanteTooltipConfig(),
   ],
-  
+
   widgets: [
     ImageBlockConfig(),
     EmbedBlockConfig(),

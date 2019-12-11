@@ -11,11 +11,11 @@ export default class Link extends React.Component {
     const str = "demo";
     /*eslint-disable */
     const pattern = new RegExp('^(https?:\/\/)?' + // protocol
-    '((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|' + // domain name
-    '((\d{1,3}\.){3}\d{1,3}))' + // OR ip (v4) address
-    '(\:\d+)?(\/[-a-z\d%_.~+]*)*' + // port and path
-    '(\?[&a-z\d%_.~+=-]*)?' + // query string
-    '(\#[-a-z\d_]*)?$', 'i') // fragment locater
+      '((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|' + // domain name
+      '((\d{1,3}\.){3}\d{1,3}))' + // OR ip (v4) address
+      '(\:\d+)?(\/[-a-z\d%_.~+]*)*' + // port and path
+      '(\?[&a-z\d%_.~+=-]*)?' + // query string
+      '(\#[-a-z\d_]*)?$', 'i') // fragment locater
     if (!pattern.test(str)) {
       alert("Please enter a valid URL.")
       return false
@@ -33,7 +33,7 @@ export default class Link extends React.Component {
     if (!this.data.showPopLinkOver) {
       return
     }
-    return this.data.showPopLinkOver(this.refs.link)
+    return this.data.showPopLinkOver(this.link)
   }
 
   _hidePopLinkOver =(e)=> {
@@ -49,7 +49,7 @@ export default class Link extends React.Component {
 
     return (
       <a
-        ref="link"
+        ref={el => { this.link = el }}
         href={ this.data.url }
         className="markup--anchor"
         onMouseOver={ this._showPopLinkOver }

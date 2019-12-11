@@ -162,9 +162,9 @@ export default class DanteEditor extends React.Component {
   }
 
   onChange =(editorState)=> {
-    
+
     //editorState = this.handleUndeletables(editorState)
-  
+
     this.setPreContent()
     this.setState( { editorState } , ()=>{
 
@@ -200,14 +200,14 @@ export default class DanteEditor extends React.Component {
     // if undeletables are deleted
     const undeletable_types = this.props.widgets.filter(
       function(o){ return o.undeletable })
-    .map(function(o){ return o.type })
-    
+      .map(function(o){ return o.type })
+
     const blockMap = editorState.getCurrentContent().get("blockMap")
 
     const undeletablesMap = blockMap
-    .filter(function(o){
-      return undeletable_types.indexOf(o.get("type")) > 0
-    })
+      .filter(function(o){
+        return undeletable_types.indexOf(o.get("type")) > 0
+      })
 
     if (undeletable_types.length > 0 && undeletablesMap.size === 0) {
 
@@ -317,7 +317,7 @@ export default class DanteEditor extends React.Component {
 
     const read_only = this.props.read_only ? false : null
     const editable = read_only !== null ? read_only : dataBlock.editable
-    
+
     return {
       component: dataBlock.block,
       editable,
@@ -356,7 +356,7 @@ export default class DanteEditor extends React.Component {
   }
 
   getDataBlock =(block)=> {
-    
+
     return this.props.widgets.find(o => {
       return o.type === block.getType()
     })
@@ -387,14 +387,14 @@ export default class DanteEditor extends React.Component {
     if (display == null) {
       display = true
     }
-    
+
     return setTimeout(() => {
       const items = this.tooltipsWithProp(prop)
       //console.log(items)
       return items.map(o => {
-        if(!this || !this.refs || !this.refs[o.ref]) return
-        this.refs[o.ref].display(display)
-        return this.refs[o.ref].relocate()
+        if(!this || !this[o.ref]) return
+        this[o.ref].display(display)
+        return this[o.ref].relocate()
       })
     }, 20)
   }
@@ -456,7 +456,7 @@ export default class DanteEditor extends React.Component {
     }
 
     const newContentState = customHTML2Content(html, this.extendedBlockRenderMap)
-    
+
     const pastedBlocks = newContentState.getBlockMap()
 
     const newState = Modifier.replaceWithFragment(
@@ -728,7 +728,7 @@ export default class DanteEditor extends React.Component {
       return getDefaultKeyBinding(e)
 
     } /*else if (e.keyCode === 8) {
-  
+
       // TODO: handle backspace/delete if previous block not editable (like divider for example)
 
 
@@ -777,22 +777,24 @@ export default class DanteEditor extends React.Component {
 
   closePopOvers = ()=> {
     return this.props.tooltips.map(o => {
-      return this.refs[o.ref].hide()
+      return this[o.ref].hide()
     })
   }
 
   relocateTooltips = ()=> {
-    
+
     if (this.props.read_only)
       return
 
-    if (isEmpty(this.refs))
-      return
+    // if (isEmpty(this.refs))
+    //   return
 
     if (!getCurrentBlock(this.state.editorState)) return
 
     return this.props.tooltips.map(o => {
-      return this.refs[o.ref].relocate()
+      if(this[o.ref]) {
+        return this[o.ref].relocate()
+      }
     })
   }
 
@@ -821,38 +823,37 @@ export default class DanteEditor extends React.Component {
   showPopLinkOver =(el)=> {
     // handles popover display
     // using anchor or from popover
-    if(!this.refs.anchor_popover)
+    if(!this.anchor_popover)
       return
 
     // set url first in order to calculate popover width
     let coords
-    this.refs.anchor_popover.setState({ url: el ? el.href : this.refs.anchor_popover.state.url })
+    this.anchor_popover.setState({ url: el ? el.href : this.anchor_popover.state.url })
 
     if (el) {
-      coords = this.refs.anchor_popover.relocate(el)
+      coords = this.anchor_popover.relocate(el)
     }
 
     if (coords) {
-      this.refs.anchor_popover.setPosition(coords)
+      this.anchor_popover.setPosition(coords)
     }
 
-    this.refs.anchor_popover.setState({ show: true })
+    this.anchor_popover.setState({ show: true })
 
     this.isHover = true
     return this.cancelHide()
   }
 
   hidePopLinkOver = ()=> {
-    if(!this.refs.anchor_popover)
+    if(!this.anchor_popover)
       return
-    
+
     return this.hideTimeout = setTimeout(() => {
-      return this.refs.anchor_popover.hide()
+      return this.anchor_popover.hide()
     }, 300)
   }
 
   cancelHide = ()=> {
-    // console.log "Cancel Hide"
     return clearTimeout(this.hideTimeout)
   }
 
@@ -869,69 +870,67 @@ export default class DanteEditor extends React.Component {
   render() {
     return (
       <div suppressContentEditableWarning={ true }>
-        
-          <div className="postContent">
 
-            <div className="section-inner layoutSingleColumn"
-                 //onClick={ this.focus }
-                 >
-              <Editor
-                blockRendererFn={ this.blockRenderer }
-                editorState={ this.state.editorState }
-                onBlur={this.onBlur}
-                onFocus={this.onFocus}
-                onChange={ this.onChange }
-                focus={this.focus}
-                //handleDrop={this.handleDrop}
-                handleReturn={ this.handleReturn }
-                blockRenderMap={ this.state.blockRenderMap }
-                blockStyleFn={ this.blockStyleFn }
-                customStyleFn={this.customStyleFn }
-                handlePastedText={ this.handlePasteText }
-                handlePastedFiles={ this.handlePasteImage }
-                handleDroppedFiles={ this.handleDroppedFiles }
-                handleKeyCommand={ this.handleKeyCommand }
-                keyBindingFn={ this.KeyBindingFn }
-                handleBeforeInput={ this.handleBeforeInput }
-                readOnly={ this.props.read_only }
-                placeholder={ this.props.body_placeholder }
-                ref="editor"
-              />
-            </div>
+        <div className="postContent">
 
-            <div className="danteEditorControls">
+          <div className="section-inner layoutSingleColumn">
+            <Editor
+              blockRendererFn={ this.blockRenderer }
+              editorState={ this.state.editorState }
+              onBlur={this.onBlur}
+              onFocus={this.onFocus}
+              onChange={ this.onChange }
+              focus={this.focus}
+              //handleDrop={this.handleDrop}
+              handleReturn={ this.handleReturn }
+              blockRenderMap={ this.state.blockRenderMap }
+              blockStyleFn={ this.blockStyleFn }
+              customStyleFn={this.customStyleFn }
+              handlePastedText={ this.handlePasteText }
+              handlePastedFiles={ this.handlePasteImage }
+              handleDroppedFiles={ this.handleDroppedFiles }
+              handleKeyCommand={ this.handleKeyCommand }
+              keyBindingFn={ this.KeyBindingFn }
+              handleBeforeInput={ this.handleBeforeInput }
+              readOnly={ this.props.read_only }
+              placeholder={ this.props.body_placeholder }
+              ref={el => { this.editor = el }}
+            />
+          </div>
 
-              {
+          <div className="danteEditorControls">
 
-                this.props.tooltips.map( (o, i) => {
-                  return (
-                    <o.component
-                      ref={ o.ref }
-                      key={ i }
-                      editor={ this }
-                      editorState={ this.state.editorState }
-                      onChange={ this.onChange }
-                      styles={this.styles}
-                      configTooltip={ o }
-                      widget_options={ o.widget_options }
-                      showPopLinkOver={ this.showPopLinkOver }
-                      hidePopLinkOver={ this.hidePopLinkOver }
-                      handleOnMouseOver={ this.handleShowPopLinkOver }
-                      handleOnMouseOut={ this.handleHidePopLinkOver }
-                    />
-                  )
-                })
-                
-              }
-            
-            </div>
+            {
+
+              this.props.tooltips.map( (o, i) => {
+                return (
+                  <o.component
+                    ref={el => { this[o.ref] = el }}
+                    key={ i }
+                    editor={ this }
+                    editorState={ this.state.editorState }
+                    onChange={ this.onChange }
+                    styles={this.styles}
+                    configTooltip={ o }
+                    widget_options={ o.widget_options }
+                    showPopLinkOver={ this.showPopLinkOver }
+                    hidePopLinkOver={ this.hidePopLinkOver }
+                    handleOnMouseOver={ this.handleShowPopLinkOver }
+                    handleOnMouseOut={ this.handleHidePopLinkOver }
+                  />
+                )
+              })
+
+            }
 
           </div>
-       
+
+        </div>
+
         {
           this.props.debug
-          ? <Debug locks={ this.state.locks } editor={ this } />
-          : undefined
+            ? <Debug locks={ this.state.locks } editor={ this } />
+            : undefined
         }
 
         { /* this.props.config.renderDraggables ?

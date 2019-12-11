@@ -47,7 +47,7 @@ export default class ButtonBlock extends React.Component {
 
   handleClickOutside =(event)=> {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target) && !event.target.closest(".popover")) {
-        this.hidePopover()
+      this.hidePopover()
     }
   }
 
@@ -69,7 +69,7 @@ export default class ButtonBlock extends React.Component {
   }
 
   setButtonStyle =(args)=>{
-   let a = Object.assign({}, this.state.buttonStyle, args);
+    let a = Object.assign({}, this.state.buttonStyle, args);
     this.setState({buttonStyle: a}, this.updateData)
   }
 
@@ -82,7 +82,7 @@ export default class ButtonBlock extends React.Component {
       fontFamily: "Helvetica",
       fontSize: 13,
       float: "none",
-     }
+    }
   }
 
   containerStyle =()=>{
@@ -112,9 +112,9 @@ export default class ButtonBlock extends React.Component {
     switch (fill) {
       case "fill":
         return Object.assign({}, this.state.buttonStyle, { color: this.state.buttonStyle.backgroundColor,
-                                                          backgroundColor: this.state.buttonStyle.color,
-                                                          border: `1px solid ${this.state.buttonStyle.color}`
-                                                        });
+          backgroundColor: this.state.buttonStyle.color,
+          border: `1px solid ${this.state.buttonStyle.color}`
+        });
         break;
       case "stroke":
         return Object.assign({}, this.state.buttonStyle, {
@@ -131,9 +131,9 @@ export default class ButtonBlock extends React.Component {
   handleFloat =(direction)=>{
     console.log(`direction ${direction}`)
     this.setState({
-      containerStyle: this.setPosition(direction),
-      float: direction
-    },
+        containerStyle: this.setPosition(direction),
+        float: direction
+      },
       ()=>{
         this.updateData()
         // this will toggle popover on position change
@@ -142,7 +142,7 @@ export default class ButtonBlock extends React.Component {
 
           setTimeout( ()=>{
             this.setState({displayPopOver: true})
-                 // this.refs.btn.click()
+            // this.refs.btn.click()
           }, 300)
 
 
@@ -154,9 +154,9 @@ export default class ButtonBlock extends React.Component {
   handleFill =(fill)=>{
     console.log(`fill ${fill}`)
     this.setState({
-      buttonStyle: this.setFill(fill),
-      fill: fill
-    },
+        buttonStyle: this.setFill(fill),
+        fill: fill
+      },
       this.updateData
     )
   }
@@ -183,22 +183,22 @@ export default class ButtonBlock extends React.Component {
 
   popoverTop =()=>{
     return (<ButtonControls
-              changeLabel={this.changeLabel}
-              label={this.state.label}
-              changeHref={this.changeHref}
-              handleFloat={this.handleFloat}
-              handleFill={this.handleFill}
-              handleBorder={this.handleBorder}
-              float={this.state.float}
-              border={this.state.border}
-              toggle={this.toggle}
-              fill={this.state.fill}
-              href={this.state.href}
-              blockProps={this.props.blockProps}
-              buttonStyle={this.state.buttonStyle}
-              setButtonStyle={this.setButtonStyle}
-            />
-          )
+        changeLabel={this.changeLabel}
+        label={this.state.label}
+        changeHref={this.changeHref}
+        handleFloat={this.handleFloat}
+        handleFill={this.handleFill}
+        handleBorder={this.handleBorder}
+        float={this.state.float}
+        border={this.state.border}
+        toggle={this.toggle}
+        fill={this.state.fill}
+        href={this.state.href}
+        blockProps={this.props.blockProps}
+        buttonStyle={this.state.buttonStyle}
+        setButtonStyle={this.setButtonStyle}
+      />
+    )
   }
 
   togglePopUp =(ev)=>{
@@ -233,40 +233,40 @@ export default class ButtonBlock extends React.Component {
     // onMouseOut={this.props.blockProps.enableEditable}
     return (
       <div style={{width: '100%', margin: "18px 0px 47px 0px"}}>
-        <div 
+        <div
           ref={this.setWrapperRef}
           style={this.state.containerStyle}>
-          
+
           <Manager>
 
             <Reference>
               {({ ref }) => (
-              
+
                 <a href={this.href}
-                  className="btn"
-                  onClick={this.togglePopUp}
-                  ref={ref}
-                  style={this.state.buttonStyle}
-                  href={this.state.href}
-                  onMouseOver={ this._showPopLinkOver }
-                  onMouseOut={ this._hidePopLinkOver }
+                   className="btn"
+                   onClick={this.togglePopUp}
+                   ref={ref}
+                   style={this.state.buttonStyle}
+                   href={this.state.href}
+                   onMouseOver={ this._showPopLinkOver }
+                   onMouseOut={ this._hidePopLinkOver }
                 >
                   <EditorBlock
-                    {...Object.assign({}, this.props)} 
+                    {...Object.assign({}, this.props)}
                   />
-              </a>
+                </a>
 
               )}
             </Reference>
             {
-              this.state.displayPopOver ? 
-            
+              this.state.displayPopOver ?
+
                 <Popper placement="top">
                   {({ ref, style, placement, arrowProps }) => (
-                    <div 
-                      ref={ref} 
-                      style={style} 
-                      className="dante--popover" 
+                    <div
+                      ref={ref}
+                      style={style}
+                      className="dante--popover"
                       data-placement={placement}>
                       <h3 className="popover-title">
                         Popper element
@@ -298,11 +298,11 @@ export default class ButtonBlock extends React.Component {
 
           </Manager>
 
-          
+
 
 
         </div>
-    </div>
+      </div>
 
     )
   }
@@ -315,13 +315,13 @@ class ButtonControls extends React.Component {
     this.state = {
       open: false,
       fontsFamilies: ["Georgia",
-                      "Helvetica",
-                      "Tahoma",
-                      "Times",
-                      "Verdana"],
+        "Helvetica",
+        "Tahoma",
+        "Times",
+        "Verdana"],
       fontSizes:  [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                   22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 44, 48,
-                   52, 56, 60],
+        22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 44, 48,
+        52, 56, 60],
       fontColorPicker: false,
       buttonColorPicker: false
 
@@ -368,13 +368,13 @@ class ButtonControls extends React.Component {
         <div
           className="button-edit"
           onMouseOver={(e)=> {
-              this.props.blockProps.disableEditable() 
-            }
+            this.props.blockProps.disableEditable()
+          }
           }
           onMouseOut={(e)=> {
-              this.setState({ displayPopOver: false })
-              this.props.blockProps.enableEditable()
-            }
+            this.setState({ displayPopOver: false })
+            this.props.blockProps.enableEditable()
+          }
           }>
           <a
             className="close-popup"
@@ -423,7 +423,7 @@ class ButtonControls extends React.Component {
                   <button
                     className={`btn btn-default ${this.activeFloat('left')}`}
                     type="button"
-                    onClick={(ev)=>{ 
+                    onClick={(ev)=>{
                       ev.preventDefault()
                       this.props.handleFloat("left")}
                     }>
@@ -582,53 +582,53 @@ class ButtonControls extends React.Component {
                       />
                     </button>
                     {
-                      this.state.fontColorPicker ? 
+                      this.state.fontColorPicker ?
                         <div style={{position: "absolute"}}>
-                        <SketchPicker
-                          color={ this.props.buttonStyle.color }
-                          presetColors={[]}
-                          onChangeComplete={(color, ev)=>{
-                            this.props.setButtonStyle({color: color.hex})}
-                          }
-                        /> 
-                        </div> : null 
+                          <SketchPicker
+                            color={ this.props.buttonStyle.color }
+                            presetColors={[]}
+                            onChangeComplete={(color, ev)=>{
+                              this.props.setButtonStyle({color: color.hex})}
+                            }
+                          />
+                        </div> : null
                     }
                   </div>
                   <div className="btn-group">
-                    <Dropdown 
+                    <Dropdown
                       trigger={ (ctx)=> {
-                      return <button
-                              aria-expanded="true"
-                              aria-haspopup="true"
-                              className="btn dropdown-toggle"
-                              id="button-font-size"
-                              onClick={(e)=> ctx.toggle() }
-                              type="button">
-                                {this.props.buttonStyle.fontSize}
-                              <span className="caret" />
-                            </button>
-                    }}
-                    target={(ctx)=>{
-                      return <ul
-                        aria-labelledby="button-font-size"
-                        className="dropdown-menu">
-                        {
-                          this.state.fontSizes.map((o,i)=>{
-                            return (
-                              <li key={`font-size-${i}`}>
-                                <a href="#" onClick={(ev)=>{
+                        return <button
+                          aria-expanded="true"
+                          aria-haspopup="true"
+                          className="btn dropdown-toggle"
+                          id="button-font-size"
+                          onClick={(e)=> ctx.toggle() }
+                          type="button">
+                          {this.props.buttonStyle.fontSize}
+                          <span className="caret" />
+                        </button>
+                      }}
+                      target={(ctx)=>{
+                        return <ul
+                          aria-labelledby="button-font-size"
+                          className="dropdown-menu">
+                          {
+                            this.state.fontSizes.map((o,i)=>{
+                              return (
+                                <li key={`font-size-${i}`}>
+                                  <a href="#" onClick={(ev)=>{
                                     ev.preventDefault()
                                     this.props.setButtonStyle({fontSize: o})
                                   }
-                                }>
-                                  {o}
-                                </a>
-                              </li>
-                            )
-                          })
-                        }
-                    </ul>
-                    }}>
+                                  }>
+                                    {o}
+                                  </a>
+                                </li>
+                              )
+                            })
+                          }
+                        </ul>
+                      }}>
                     </Dropdown>
                   </div>
                 </div>
@@ -636,44 +636,44 @@ class ButtonControls extends React.Component {
                 <Dropdown
                   trigger={(ctx)=> {
                     return <button
-                              aria-expanded="true"
-                              aria-haspopup="true"
-                              className="btn dropdown-toggle"
-                              id="dropdownMenu1"
-                              onClick={(e)=>ctx.toggle()}
-                              type="button">
+                      aria-expanded="true"
+                      aria-haspopup="true"
+                      className="btn dropdown-toggle"
+                      id="dropdownMenu1"
+                      onClick={(e)=>ctx.toggle()}
+                      type="button">
                               <span className="selected">
                                 {this.props.buttonStyle.fontFamily}
                               </span>
-                              <span className="caret" />
-                            </button>
+                      <span className="caret" />
+                    </button>
                   }}
                   target={(ctx)=>{
                     return <ul
-                              aria-labelledby="dropdownMenu1"
-                              className="dropdown-menu">
-                              {
-                                this.state.fontsFamilies.map((o,i)=>{
-                                  return (
-                                    <li key={`font-family-${i}`}>
-                                      <a href="#" onClick={(ev)=>{
-                                          ev.preventDefault()
-                                          this.props.setButtonStyle({fontFamily: o})
-                                        }
-                                      }>
-                                        {o}
-                                      </a>
-                                    </li>
-                                  )
-                                })
+                      aria-labelledby="dropdownMenu1"
+                      className="dropdown-menu">
+                      {
+                        this.state.fontsFamilies.map((o,i)=>{
+                          return (
+                            <li key={`font-family-${i}`}>
+                              <a href="#" onClick={(ev)=>{
+                                ev.preventDefault()
+                                this.props.setButtonStyle({fontFamily: o})
                               }
-                            </ul>
+                              }>
+                                {o}
+                              </a>
+                            </li>
+                          )
+                        })
+                      }
+                    </ul>
                   }
-                }
+                  }
                 >
-                
+
                 </Dropdown>
-                
+
                 {/*
                 <div className="dropdown font-select" style={{float: "none"}}>
                   <button
@@ -731,17 +731,17 @@ class ButtonControls extends React.Component {
                         }}
                       />
                     </button>
-                    
+
                     {
-                      this.state.buttonColorPicker ? 
+                      this.state.buttonColorPicker ?
                         <div style={{position: "absolute"}}>
-                        <SketchPicker
-                          color={ this.props.buttonStyle.backgroundColor }
-                          onChangeComplete={(color, ev)=>{
-                            this.props.setButtonStyle({backgroundColor: color.hex})}
-                          }
-                        />
-                      </div> : null
+                          <SketchPicker
+                            color={ this.props.buttonStyle.backgroundColor }
+                            onChangeComplete={(color, ev)=>{
+                              this.props.setButtonStyle({backgroundColor: color.hex})}
+                            }
+                          />
+                        </div> : null
                     }
 
                   </div>
@@ -752,8 +752,8 @@ class ButtonControls extends React.Component {
                   type="text"
                   value={this.props.buttonStyle.backgroundColor}
                   onChange={(ev)=>{
-                            this.props.setButtonStyle({backgroundColor: ev.currentTarget.value})}
-                          }
+                    this.props.setButtonStyle({backgroundColor: ev.currentTarget.value})}
+                  }
                 />
               </div>
             </div>
@@ -782,7 +782,7 @@ class Dropdown extends Component {
   }
 
   handleClickOutside =(event)=> {
-    if (this.refs.el && !this.refs.el.contains(event.target)) {
+    if (this.el && !this.el.contains(event.target)) {
       this.setState({open: false})
     }
   }
@@ -793,11 +793,11 @@ class Dropdown extends Component {
 
   render(){
     return <div className="dropdown font-select"
-      ref={"el"}
-      style={{float: "none"}}
-      >
-        {this.props.trigger(this)}
-        { this.state.open ? this.props.target(this) : null }
+                ref={el => { this.el = el }}
+                style={{float: "none"}}
+    >
+      {this.props.trigger(this)}
+      { this.state.open ? this.props.target(this) : null }
     </div>
   }
 }

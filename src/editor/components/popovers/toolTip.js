@@ -1,20 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import DanteTooltipColor from './color'
+import DanteTooltipToggle from './toggle'
 import {AnchorStyle} from '../../styled/menu'
+import {Entity, getVisibleSelectionRect, RichUtils} from 'draft-js'
 
-//import DanteTooltipList from './select'
+import {getRelativeParent, getSelection, getSelectionRect} from "../../utils/selection.js"
 
-import {
-  getVisibleSelectionRect,
-  Entity,
-  RichUtils } from 'draft-js'
-
-import { getSelectionRect, getSelection, getRelativeParent } from "../../utils/selection.js"
-
-import { getCurrentBlock } from '../../model/index.js'
+import {getCurrentBlock} from '../../model/index.js'
 
 import Icons from "../icons.js"
+
+//import DanteTooltipList from './select'
 
 
 class DanteTooltip extends React.Component {
@@ -28,6 +25,8 @@ class DanteTooltip extends React.Component {
       position: {},
       menu_style: {}
     }
+
+    this.padd = 0
   }
 
   _clickInlineHandler =(ev, style)=> {
@@ -79,12 +78,8 @@ class DanteTooltip extends React.Component {
 
   }
 
-  relocate =()=> {
-
-    // no position needs to be set
-    if(this.state.sticky){
-      return this.handleWindowWidth()
-    }
+  relocate = () => {
+    const { sticky } = this.state
 
     let currentBlock = getCurrentBlock(this.props.editorState)
     let blockType = currentBlock.getType()
@@ -102,8 +97,10 @@ class DanteTooltip extends React.Component {
       return
     }
 
-    let el = this.refs.dante_menu
-    let padd = el.offsetWidth / 2
+    if(!sticky) {
+      let el = this.danteMenuRef
+      this.padd = el.offsetWidth / 2
+    }
 
     let nativeSelection = getSelection(window)
     if (!nativeSelection.rangeCount) {
@@ -120,9 +117,8 @@ class DanteTooltip extends React.Component {
       return
     }
 
-    const relativeParent = getRelativeParent(this.refs.dante_menu.parentElement);
-    const toolbarHeight = this.refs.dante_menu.clientHeight;
-    //const toolbarWidth = this.refs.dante_menu.clientWidth;
+    const relativeParent = getRelativeParent(this.danteMenuRef.parentElement);
+    const toolbarHeight = this.danteMenuRef.clientHeight;
     const relativeRect = (relativeParent || document.body).getBoundingClientRect();
     const selectionRect = getVisibleSelectionRect(window);
 
@@ -130,10 +126,7 @@ class DanteTooltip extends React.Component {
       return
 
     let top = (selectionRect.top - relativeRect.top) - toolbarHeight
-    //let left = selectionBoundary.left + selectionBoundary.width / 2 - padd
-    let left = (selectionRect.left - relativeRect.left + (selectionRect.width/2) ) - padd // - (toolbarWidth / 2 ) + 10
-
-    //let left = (selectionRect.left - relativeRect.left) + (selectionRect.width / 2)
+    let left = (selectionRect.left - relativeRect.left + (selectionRect.width/2) ) - this.padd
 
     if (!top || !left) {
       return
@@ -243,9 +236,8 @@ class DanteTooltip extends React.Component {
   getPosition =()=> {
     if(this.isSticky())
       return this.stickyStyle()
-    
-    let pos = this.state.position
-    return pos
+
+    return this.state.position
   }
 
   inlineItems =()=> {
@@ -261,8 +253,8 @@ class DanteTooltip extends React.Component {
   }
 
   getDefaultValue =()=> {
-    if (this.refs.dante_menu_input) {
-      this.refs.dante_menu_input.value = ""
+    if (this.danteMenuInputRef) {
+      this.danteMenuInputRef.value = ""
     }
 
     let currentBlock = getCurrentBlock(this.props.editorState)
@@ -284,7 +276,7 @@ class DanteTooltip extends React.Component {
 
       if (start === selStart && end === selEnd) {
         defaultUrl = contentState.getEntity(selectedEntity).getData().url
-        return this.refs.dante_menu_input.value = defaultUrl
+        return this.danteMenuInputRef.value = defaultUrl
       }
     })
   }
@@ -294,11 +286,25 @@ class DanteTooltip extends React.Component {
   }
 
   stickyStyle = ()=>{
-    return {
-      position: "fixed",
-      top: "0px",
-      left: "0px"
+    const style = {
+      position: 'fixed',
+      width: '100%'
     }
+
+    if(this.props.stickyPosition === 'bottom') {
+      style.bottom = 0
+      style.top = 'auto'
+    } else {
+      style.top = 0
+    }
+
+    return style
+  }
+
+  toggleSticky = () => {
+    const sticky = !this.state.sticky
+    this.setState({ sticky })
+    this.callRelocate()
   }
 
   isSticky = ()=>{
@@ -316,31 +322,31 @@ class DanteTooltip extends React.Component {
     return (
       <AnchorStyle
         id="dante-menu"
-        ref="dante_menu"
+        ref={el => { this.danteMenuRef = el }}
         className={ `dante-menu ${ this.displayActiveMenu() } ${ this.displayLinkMode() } ${this.isSticky() ? 'dante-sticky-menu' : ''}` }
         style={ this.getPosition() }
       >
 
         {
 
-          this.linkBlock() ? 
+          this.linkBlock() ?
             <div className="dante-menu-linkinput">
               <input
                 className="dante-menu-input"
-                ref="dante_menu_input"
+                ref={el => { this.danteMenuInputRef = el }}
                 placeholder={this.linkBlock().placeholder}
                 onKeyPress={ this.handleInputEnter }
                 //defaultValue={ this.getDefaultValue() }
               />
               <div className="dante-menu-button"
-              onMouseDown={ this._disableLinkMode }>
+                   onMouseDown={ this._disableLinkMode }>
                 <span className={ 'dante-icon'}>
                   {Icons['close']()}
                 </span>
               </div>
             </div> : null
         }
-        
+
         <ul className="dante-menu-buttons" style={this.state.menu_style}>
 
           {
@@ -386,57 +392,67 @@ class DanteTooltip extends React.Component {
           */}
 
           { this.props.widget_options.block_types.map( (item, i) => {
-              switch (item.type) {
-                case "block":
-                  return <DanteTooltipItem
-                            key={ i }
-                            item={ item }
-                            styles={this.props.style}
-                            handleClick={ this._clickBlockHandler }
-                            editorState={ this.props.editorState }
-                            type="block"
-                            currentStyle={ this.props.editorState.getCurrentInlineStyle }
-                          />
-                  break;
+            switch (item.type) {
+              case "block":
+                return <DanteTooltipItem
+                  key={ i }
+                  item={ item }
+                  styles={this.props.style}
+                  handleClick={ this._clickBlockHandler }
+                  editorState={ this.props.editorState }
+                  type="block"
+                  currentStyle={ this.props.editorState.getCurrentInlineStyle }
+                />
+                break;
 
-                case "inline":
-                  return <DanteTooltipItem
-                            key={ i }
-                            item={ item }
-                            type="inline"
-                            editorState={ this.props.editorState }
-                            handleClick={ this._clickInlineHandler }
-                          />
-                  break;
-                
-                case "color":
-                  return <DanteTooltipColor
-                            key={ i }
-                            styles={this.props.styles}
-                            editorState={ this.props.editorState }
-                            enableLinkMode={ this._enableLinkMode }
-                            value={'#000'}
-                            style_type="color"
-                            handleClick={this._clickBlockInlineStyle}
-                            show={this.state.show}
-                          />
-                  break
+              case "inline":
+                return <DanteTooltipItem
+                  key={ i }
+                  item={ item }
+                  type="inline"
+                  editorState={ this.props.editorState }
+                  handleClick={ this._clickInlineHandler }
+                />
+                break;
 
-                case "separator":
-                  return <DanteMenuDivider key={ i }/>
-                  break;
-                case "link": 
-                  return <DanteTooltipLink
-                            key={ i }
-                            editorState={ this.props.editorState }
-                            enableLinkMode={ this._enableLinkMode }
-                          />
-                  break;
-                default:
-                  break;
-              }
-              
-            })
+              case "color":
+                return <DanteTooltipColor
+                  key={ i }
+                  styles={this.props.styles}
+                  editorState={ this.props.editorState }
+                  enableLinkMode={ this._enableLinkMode }
+                  value={'#000'}
+                  style_type="color"
+                  handleClick={this._clickBlockInlineStyle}
+                  show={this.state.show}
+                />
+                break
+
+              case "separator":
+                return <DanteMenuDivider key={ i }/>
+                break;
+              case "link":
+                return <DanteTooltipLink
+                  key={ i }
+                  editorState={ this.props.editorState }
+                  enableLinkMode={ this._enableLinkMode }
+                />
+                break;
+
+              case "toggle":
+                return (
+                  <DanteTooltipToggle
+                    key={ i }
+                    item={ item }
+                    handleClick={this.toggleSticky}
+                  />
+                )
+
+              default:
+                break;
+            }
+
+          })
           }
         </ul>
       </AnchorStyle>
@@ -444,9 +460,13 @@ class DanteTooltip extends React.Component {
   }
 }
 
+DanteTooltip.defaultProps = {
+  stickyPosition: 'bottom'
+}
+
 const DanteMenuDivider = ()=>{
   return <li className="dante-menu-divider"/>
-} 
+}
 
 class DanteTooltipItem extends React.Component {
 
@@ -495,7 +515,7 @@ class DanteTooltipItem extends React.Component {
   render() {
     return (
       <li className={ `dante-menu-button ${ this.activeClass() }` }
-        onMouseDown={ this.handleClick }>
+          onMouseDown={ this.handleClick }>
         <span className={ 'dante-icon'}>
           {this.props.item.icon()}
         </span>
@@ -521,7 +541,7 @@ class DanteTooltipLink extends React.Component {
   render() {
     return (
       <li className="dante-menu-button"
-        onMouseDown={ this.promptForLink }>
+          onMouseDown={ this.promptForLink }>
         <span className={ 'dante-icon'}>
           {Icons['link']()}
         </span>
@@ -550,13 +570,13 @@ export const DanteTooltipConfig = (options={})=>{
       'header-two',
       'header-three',
       'header-four',
-      'footer', 
+      'footer',
       'column',
-      'jumbo'
+      'jumbo',
     ],
     widget_options: {
       placeholder: "type a url",
-      
+
       block_types: [
         { label: 'p', style: 'unstyled',  icon: Icons.bold },
         { label: 'h2', style: 'header-one', type: "block" , icon: Icons.h1 },
@@ -566,7 +586,7 @@ export const DanteTooltipConfig = (options={})=>{
         { type: "separator" },
         { label: 'color', type: "color" },
         { type: "link" },
-      
+
         { label: 'blockquote', style: 'blockquote', type: "block", icon: Icons.blockquote },
         { type: "separator" },
         { label: 'insertunorderedlist', style: 'unordered-list-item', type: "block", icon: Icons.insertunorderedlist },
@@ -574,11 +594,12 @@ export const DanteTooltipConfig = (options={})=>{
         { type: "separator" },
         { label: 'code', style: 'code-block', type: "block",  icon: Icons.code },
         { label: 'bold', style: 'BOLD', type: "inline", icon: Icons.bold },
-        { label: 'italic', style: 'ITALIC', type: "inline", icon: Icons.italic }
+        { label: 'italic', style: 'ITALIC', type: "inline", icon: Icons.italic },
+        { label: 'toggle', style: 'toggle', type: "toggle", icon: Icons.toggle },
       ]
     }
-  } 
+  }
   return Object.assign(config, options)
 }
 
-    
+
