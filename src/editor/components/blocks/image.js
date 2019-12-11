@@ -215,7 +215,7 @@ export default class ImageBlock extends React.Component {
   }
 
   getUploadHeaders()  {
-   return this.config.upload_headers || {}
+    return this.config.upload_headers || {}
   }
 
   uploadFile = ()=> {
@@ -224,14 +224,14 @@ export default class ImageBlock extends React.Component {
     if (this.config.upload_handler) {
       return this.config.upload_handler(this.formatData().get('file'), this)
     }
-    
+
     if (!this.config.upload_url){
       this.stopLoader()
       return
     }
-  
+
     this.props.blockProps.addLock()
-    
+
     axios({
       method: 'post',
       url: this.getUploadUrl(),
@@ -298,22 +298,22 @@ export default class ImageBlock extends React.Component {
   render = ()=> {
 
     return (
-      <figure ref="image_tag2" suppressContentEditableWarning={true}>
+      <figure suppressContentEditableWarning={true}>
         <div className="aspectRatioPlaceholder is-locked"
-          style={this.coords()}
-          onClick={this.handleGrafFigureSelectImg}>
+             style={this.coords()}
+             onClick={this.handleGrafFigureSelectImg}>
           <div style={{ paddingBottom: `${ this.state.aspect_ratio.ratio }%` }}
-            className='aspect-ratio-fill' />
+               className='aspect-ratio-fill' />
           <img src={this.state.url}
-            ref={(ref) => this.image_tag = ref }
-            height={this.state.aspect_ratio.height}
-            width={this.state.aspect_ratio.width}
-            className='graf-image'
-            contentEditable={false}
-            alt={this.state.url}
+               ref={(ref) => this.image_tag = ref }
+               height={this.state.aspect_ratio.height}
+               width={this.state.aspect_ratio.width}
+               className='graf-image'
+               contentEditable={false}
+               alt={this.state.url}
           />
           <Loader toggle={this.state.loading}
-            progress={this.state.loading_progress} />
+                  progress={this.state.loading_progress} />
         </div>
         <figcaption className='imageCaption' onMouseDown={this.handleFocus}>
           { this.props.block.getText().length === 0 ?
@@ -322,7 +322,7 @@ export default class ImageBlock extends React.Component {
             </span> : undefined}
           <EditorBlock {...Object.assign({}, this.props, {
             "editable": true, "className": "imageCaption" })
-            } />
+                       } />
         </figcaption>
       </figure>
     )
@@ -336,15 +336,15 @@ class Loader extends React.Component {
       <div>
         { this.props.toggle
           ? <div className="image-upoader-loader">
-              <p>
-                { this.props.progress === 100
-                  ? "processing image..."
-                  : <span>
+            <p>
+              { this.props.progress === 100
+                ? "processing image..."
+                : <span>
                       <span>loading</span> { Math.round( this.props.progress ) }
                     </span>
-                }
-              </p>
-            </div>
+              }
+            </p>
+          </div>
           : undefined
         }
       </div>
@@ -400,9 +400,9 @@ export const ImageBlockConfig = (options={})=>{
       delete_block_callback: null,
       image_caption_placeholder: "type a caption (optional)"
     }
-  
+
   }
-  
+
   return Object.assign(config, options)
 }
 

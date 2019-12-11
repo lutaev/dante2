@@ -54,9 +54,9 @@ class DanteAnchorPopover extends React.Component {
 
     let parent = ReactDOM.findDOMNode(this.props.editor)
 
-    const relativeParent = getRelativeParent(this.refs.dante_popover.parentElement);
-    const toolbarHeight = this.refs.dante_popover.clientHeight;
-    const toolbarWidth = this.refs.dante_popover.clientWidth;
+    const relativeParent = getRelativeParent(this.dantePopover.parentElement);
+    const toolbarHeight = this.dantePopover.clientHeight;
+    const toolbarWidth = this.dantePopover.clientWidth;
     const relativeRect = (relativeParent || document.body).getBoundingClientRect();
 
     if(!relativeRect || !selectionRect)
@@ -73,7 +73,7 @@ class DanteAnchorPopover extends React.Component {
       top: top,
       left: left
     }
-    
+
   }
 
   render() {
@@ -85,7 +85,7 @@ class DanteAnchorPopover extends React.Component {
     }
     return (
       <AnchorStyle
-        ref="dante_popover"
+        ref={el => { this.dantePopover = el }}
         className='dante-popover popover--tooltip popover--Linktooltip popover--bottom is-active'
         style={ style }
         onMouseOver={ this.props.handleOnMouseOver }
@@ -107,8 +107,8 @@ export default DanteAnchorPopover
 
 export const DanteAnchorPopoverConfig = (options={})=>{
   let config = {
-      ref: 'anchor_popover',
-      component: DanteAnchorPopover
-  } 
+    ref: 'anchor_popover',
+    component: DanteAnchorPopover
+  }
   return Object.assign(config, options)
 }

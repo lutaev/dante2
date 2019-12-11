@@ -34,10 +34,6 @@ export default class DanteInlineTooltip extends React.Component {
     this.initialPosition = 0
   }
 
-  componentDidMount(){
-    //this.initialPosition = this.refs.tooltip.offsetLeft
-  }
-
   UNSAFE_componentWillReceiveProps(newProps) {
     return this.collapse()
   }
@@ -80,8 +76,8 @@ export default class DanteInlineTooltip extends React.Component {
     }
     return this.setState({
       scaled: true }, ()=>{
-        this.setState({scaledWidth: 300})
-      })
+      this.setState({scaledWidth: 300})
+    })
   }
 
   collapse = ()=> {
@@ -90,11 +86,11 @@ export default class DanteInlineTooltip extends React.Component {
     }
     return this.setState({
       scaled: false }, ()=>{
-        setTimeout(()=>{
-          this.setState({scaledWidth: 0})
-        }, 300)
+      setTimeout(()=>{
+        this.setState({scaledWidth: 0})
+      }, 300)
 
-      })
+    })
   }
 
   activeClass = ()=> {
@@ -122,7 +118,7 @@ export default class DanteInlineTooltip extends React.Component {
   // collapse , class, width
 
   clickOnFileUpload = ()=> {
-    this.refs.fileInput.click()
+    this.fileInput.click()
     this.collapse()
     return this.hide()
   }
@@ -146,7 +142,7 @@ export default class DanteInlineTooltip extends React.Component {
       file
     }
     // cleans input image value
-    this.refs.fileInput.value = ""
+    this.fileInput.value = ""
 
     return this.props.onChange(addNewBlock(this.props.editorState, 'image', opts))
   }
@@ -232,9 +228,10 @@ export default class DanteInlineTooltip extends React.Component {
       return
     }
 
-    const relativeParent = getRelativeParent(this.refs.tooltip.parentElement);
-    const toolbarHeight = this.refs.tooltip.clientHeight;
-    const toolbarWidth = this.refs.tooltip.clientWidth;
+    const { parentElement, clientHeight, clientWidth } = this.tooltip
+    const relativeParent = getRelativeParent(parentElement);
+    const toolbarHeight = clientHeight;
+    const toolbarWidth = clientWidth;
     const relativeRect = (relativeParent || document.body).getBoundingClientRect();
 
     if(!relativeRect || !selectionRect)
@@ -256,10 +253,10 @@ export default class DanteInlineTooltip extends React.Component {
     })
   }
 
-  render(){
+  render() {
     return (
       <InlinetooltipWrapper
-        ref="tooltip"
+        ref={el => { this.tooltip = el }}
         className={ `inlineTooltip ${ this.activeClass() } ${ this.scaledClass() }` }
         style={ this.state.position }
       >
@@ -273,27 +270,27 @@ export default class DanteInlineTooltip extends React.Component {
           {add()}
         </button>
         <div
-           className="inlineTooltip-menu"
-           style={ { width: `${ this.state.scaledWidth }px` } }
-         >
+          className="inlineTooltip-menu"
+          style={ { width: `${ this.state.scaledWidth }px` } }
+        >
           { this.getItems().map( (item, i) => {
             return  <InlineTooltipItem
-                      item={ item }
-                      key={ i }
-                      clickHandler={ this.clickHandler }
-                    />
-            })
-          }
-       
-            <input
-              type="file"
-              accept="image/*"
-              style={ { display: 'none' } }
-              ref="fileInput"
-              multiple="multiple"
-              onChange={ this.handleFileInput }
+              item={ item }
+              key={ i }
+              clickHandler={ this.clickHandler }
             />
-          
+          })
+          }
+
+          <input
+            type="file"
+            accept="image/*"
+            style={ { display: 'none' } }
+            ref={el => { this.fileInput = el }}
+            multiple="multiple"
+            onChange={ this.handleFileInput }
+          />
+
         </div>
       </InlinetooltipWrapper>
     )
@@ -317,11 +314,11 @@ class InlineTooltipItem extends React.Component {
         onClick={(e)=> e.preventDefault()}
         style={{fontSize: '21px'}}
       >
-      {
-        <span className={ 'tooltip-icon'}>
+        {
+          <span className={ 'tooltip-icon'}>
           {this.props.item.icon()}
         </span>
-      }
+        }
       </button>
     )
   }

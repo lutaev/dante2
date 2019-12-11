@@ -19,9 +19,9 @@ class DanteImagePopover extends React.Component {
       show: false,
       scaled: false,
       buttons: [{ type: "left" },
-                { type: "center"},
-                { type: "fill" },
-                { type: "wide" }]
+        { type: "center"},
+        { type: "fill" },
+        { type: "wide" }]
     }
   }
 
@@ -90,15 +90,15 @@ class DanteImagePopover extends React.Component {
         let imageBoxNode = document.getElementsByClassName("is-selected")[0]
         let selectionRect = imageBoxNode.getBoundingClientRect()
 
-        let el = this.refs.image_popover
+        let el = this.imagePopover
         const relativeParent = getRelativeParent(el.parentElement);
         const toolbarHeight = el.clientHeight;
         const toolbarWidth =  el.clientWidth;
         const relativeRect = (relativeParent || document.body).getBoundingClientRect();
-        
+
         let top = (selectionRect.top - relativeRect.top) - (toolbarHeight/0.8)
         let left = (selectionRect.left - relativeRect.left + (selectionRect.width/2) ) - ( toolbarWidth/2 )
-        
+
         //let left = selectionRect.left + selectionRect.width / 2 - padd
         //let top = (selectionRect.top + window.scrollY) - toolbarHeight
         return this.setPosition({
@@ -125,22 +125,22 @@ class DanteImagePopover extends React.Component {
   render =()=> {
     return (
       <AnchorStyle
-        ref="image_popover"
+        ref={el => { this.imagePopover = el }}
         className={ `dante-popover popover--Aligntooltip popover--top popover--animated ${ this.state.show ? 'is-active' : undefined }` }
         style={
           { top: this.state.position.top,
             left: this.state.position.left }
-          }
+        }
       >
         <div className='popover-inner'>
           <ul className='dante-menu-buttons'>
             { this.state.buttons.map( (item, i) => {
-                return  <DanteImagePopoverItem
-                          item={ item }
-                          handleClick={ this.handleClick }
-                          key={ i }
-                        />
-              })
+              return  <DanteImagePopoverItem
+                item={ item }
+                handleClick={ this.handleClick }
+                key={ i }
+              />
+            })
             }
           </ul>
         </div>
@@ -178,8 +178,8 @@ export default DanteImagePopover
 
 export const DanteImagePopoverConfig = (options={})=>{
   let config = {
-      ref: 'image_popover',
-      component: DanteImagePopover
+    ref: 'image_popover',
+    component: DanteImagePopover
   }
   return Object.assign(config, options)
 }

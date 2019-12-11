@@ -7,7 +7,7 @@ import { updateDataOfBlock } from '../../model/index.js'
 
 
 export default class CardBlock extends React.Component {
-  
+
   constructor(props) {
     super(props)
     this.state = {
@@ -47,28 +47,28 @@ export default class CardBlock extends React.Component {
   render() {
     return (
       <div style={{ width: '100%',
-                    height: '100px',
-                    margin: '18px 0px 47px'}}>
-          <div className="signature">
-            <CardImage 
-              image={this.state.image}
-              setImage={this.setImage}
-              config={this.config}
-              {...this.props}
-            />
-            <div className="text" 
-              style={{
-                "color": 'rgb(153, 153, 153)', 
-                "fontSize": '12px', 
-                "fontWeight": 'bold'}}>
-              
-              {this.placeholderRender()}
+        height: '100px',
+        margin: '18px 0px 47px'}}>
+        <div className="signature">
+          <CardImage
+            image={this.state.image}
+            setImage={this.setImage}
+            config={this.config}
+            {...this.props}
+          />
+          <div className="text"
+               style={{
+                 "color": 'rgb(153, 153, 153)',
+                 "fontSize": '12px',
+                 "fontWeight": 'bold'}}>
 
-              <EditorBlock {...Object.assign({}, this.props, { 
-                "editable": true })
-              } />
-            </div>
+            {this.placeholderRender()}
+
+            <EditorBlock {...Object.assign({}, this.props, {
+              "editable": true })
+                         } />
           </div>
+        </div>
         <div className="dante-clearfix"/>
       </div>
     )
@@ -91,7 +91,7 @@ class CardImage extends React.Component {
 
   clickOnFileUpload =(ev)=> {
     ev.preventDefault()
-    this.refs.fileInput.click()
+    this.fileInput.click()
     //ev.preventDefault()
   }
 
@@ -114,7 +114,7 @@ class CardImage extends React.Component {
   }
 
   getUploadHeaders =()=>  {
-   return this.props.config.upload_headers || {}
+    return this.props.config.upload_headers || {}
   }
 
   getUploadUrl =()=> {
@@ -200,7 +200,7 @@ class CardImage extends React.Component {
       formData.append(formName, this.file)
       return formData
     } else {
-      // TODO: check this 
+      // TODO: check this
       formData.append('url', this.props.blockProps.data.get("url"))
       return formData
     }
@@ -218,20 +218,20 @@ class CardImage extends React.Component {
 
   render(){
 
-    return (  
+    return (
       <div>
-        <a href="#" contentEditable="false" 
-          onClick={this.clickOnFileUpload}>
+        <a href="#" contentEditable="false"
+           onClick={this.clickOnFileUpload}>
           <img src={this.props.image}/>
-          <Loader toggle={this.state.loading} 
-            progress={this.state.loading_progress} />
+          <Loader toggle={this.state.loading}
+                  progress={this.state.loading_progress} />
         </a>
         <input
-           type="file"
-           style={ { display: 'none' } }
-           ref="fileInput"
-           onChange={ this.handleFileInput }
-         />
+          type="file"
+          style={ { display: 'none' } }
+          ref={el => { this.fileInput = el }}
+          onChange={ this.handleFileInput }
+        />
 
       </div>
     )
@@ -245,15 +245,15 @@ class Loader extends React.Component {
       <div>
         { this.props.toggle
           ? <div className="image-upoader-loader">
-              <p>
-                { this.props.progress === 100
-                  ? "processing image..."
-                  : <span>
+            <p>
+              { this.props.progress === 100
+                ? "processing image..."
+                : <span>
                       <span>loading</span> { Math.round( this.props.progress ) }
                     </span>
-                }
-              </p>
-            </div>
+              }
+            </p>
+          </div>
           : undefined
         }
       </div>
