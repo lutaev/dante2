@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import ReactDOM from 'react-dom'
 
 
 import {
   addNewBlock,
+  addNewBlockAt,
   resetBlockWithType,
   getCurrentBlock
 } from '../../model/index.js'
@@ -118,7 +119,13 @@ export default class DanteInlineTooltip extends React.Component {
   // collapse , class, width
 
   clickOnFileUpload = ()=> {
-    this.fileInput.click()
+    const MediaLibrary = this.props.configTooltip.mediaLibrary
+
+    if(MediaLibrary) {
+      this.mediaLibraryElement.toggle(true)
+    } else {
+      this.fileInput.click()
+    }
     this.collapse()
     return this.hide()
   }
@@ -133,14 +140,30 @@ export default class DanteInlineTooltip extends React.Component {
     return this.props.onChange(resetBlockWithType(this.props.editorState, 'placeholder', opts))
   }
 
+  insertImageFromLibrary = (data) => {
+    let opts = {
+      url: data.file,
+      forceUpload: true
+    }
+
+    // let opts = {
+    //   url: 'https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg',
+    //   forceUpload: true
+    // }
+
+    const { editorState } = this.props
+    const currentBlock = getCurrentBlock(editorState)
+    return this.props.onChange(addNewBlockAt(editorState, currentBlock.getKey(), 'image', opts))
+  }
+
   insertImage =(file)=> {
     if(!file)
       return
 
     let opts = {
       url: URL.createObjectURL(file),
-      file
     }
+
     // cleans input image value
     this.fileInput.value = ""
 
@@ -253,46 +276,66 @@ export default class DanteInlineTooltip extends React.Component {
     })
   }
 
+  renderMediaLibrary() {
+    const MediaLibrary = this.props.configTooltip.mediaLibrary
+
+    if(!MediaLibrary) {
+      return null
+    }
+
+    return ReactDOM.createPortal(
+      <MediaLibrary
+        title="Choose a file or add a new one"
+        ref={el => { this.mediaLibraryElement = el }}
+        onChange={this.insertImageFromLibrary}
+      />,
+      document.body
+    );
+  }
+
   render() {
     return (
-      <InlinetooltipWrapper
-        ref={el => { this.tooltip = el }}
-        className={ `inlineTooltip ${ this.activeClass() } ${ this.scaledClass() }` }
-        style={ this.state.position }
-      >
-        <button
-          type="button"
-          className="inlineTooltip-button control"
-          title="Close Menu"
-          data-action="inline-menu"
-          onMouseDown={ this._toggleScaled }
+      <Fragment>
+        <InlinetooltipWrapper
+          ref={el => { this.tooltip = el }}
+          className={ `inlineTooltip ${ this.activeClass() } ${ this.scaledClass() }` }
+          style={ this.state.position }
         >
-          {add()}
-        </button>
-        <div
-          className="inlineTooltip-menu"
-          style={ { width: `${ this.state.scaledWidth }px` } }
-        >
-          { this.getItems().map( (item, i) => {
-            return  <InlineTooltipItem
-              item={ item }
-              key={ i }
-              clickHandler={ this.clickHandler }
+          <button
+            type="button"
+            className="inlineTooltip-button control"
+            title="Close Menu"
+            data-action="inline-menu"
+            onMouseDown={ this._toggleScaled }
+          >
+            {add()}
+          </button>
+          <div
+            className="inlineTooltip-menu"
+            style={ { width: `${ this.state.scaledWidth }px` } }
+          >
+            { this.getItems().map( (item, i) => {
+              return  <InlineTooltipItem
+                item={ item }
+                key={ i }
+                clickHandler={ this.clickHandler }
+              />
+            })
+            }
+
+            <input
+              type="file"
+              accept="image/*"
+              style={ { display: 'none' } }
+              ref={el => { this.fileInput = el }}
+              multiple="multiple"
+              onChange={ this.handleFileInput }
             />
-          })
-          }
 
-          <input
-            type="file"
-            accept="image/*"
-            style={ { display: 'none' } }
-            ref={el => { this.fileInput = el }}
-            multiple="multiple"
-            onChange={ this.handleFileInput }
-          />
-
-        </div>
-      </InlinetooltipWrapper>
+          </div>
+        </InlinetooltipWrapper>
+        {this.renderMediaLibrary()}
+      </Fragment>
     )
   }
 }

@@ -38,8 +38,7 @@ Get currentBlock in the editorState.
 export const getCurrentBlock = (editorState) => {
   const selectionState = editorState.getSelection();
   const contentState = editorState.getCurrentContent();
-  const block = contentState.getBlockForKey(selectionState.getStartKey());
-  return block;
+  return contentState.getBlockForKey(selectionState.getStartKey());
 };
 
 /*
@@ -134,12 +133,12 @@ export const updateTextOfBlock = (editorState, block, text) => {
 
 export const updateCharacterListOfBlock = (editorState, block, text, charList) => {
   const contentState = editorState.getCurrentContent()
-  
+
   const newBlock = block.merge({
     text: text,
     characterList: charList
   });
-  
+
   const newContentState = contentState.merge({
     blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
   });

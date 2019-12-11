@@ -294,7 +294,6 @@ export default class DanteEditor extends React.Component {
   }
 
   blockRenderer =(block)=> {
-
     /*switch (block.getType()) {
       case "atomic":
         const entity = block.getEntityAt(0)
@@ -311,6 +310,7 @@ export default class DanteEditor extends React.Component {
 
   handleBlockRenderer =(block)=> {
     const dataBlock = this.getDataBlock(block)
+    console.log('dataBlock', dataBlock)
     if (!dataBlock) {
       return null
     }
@@ -868,6 +868,8 @@ export default class DanteEditor extends React.Component {
   //##############################
 
   render() {
+    // console.log('Focus:', this.focus)
+    // console.log('EditorState:', this.state.editorState)
     return (
       <div suppressContentEditableWarning={ true }>
 
